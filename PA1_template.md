@@ -1,13 +1,9 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
-```{r load}
+
+```r
 #get the current folder
         curdir <- getwd()       
 #Download file if not present in current directory
@@ -30,7 +26,6 @@ act_df <- read.csv(data_file)
 #convert dates
 # act_df$date <-
 #         strptime(act_df$date, "%Y-%m-%d")
-
 ```
 
 
@@ -38,57 +33,75 @@ act_df <- read.csv(data_file)
 
 Total number of steps taken per day
 
-```{r total_mean, echo=TRUE}
 
+```r
 hist(aggregate(act_df$steps,list(act_df$date),sum)$x, main="Total number of steps taken per day", xlab="Steps")
-
 ```
+
+![](PA1_template_files/figure-html/total_mean-1.png)<!-- -->
 
 Mean of total number of steps taken per day
 
-```{r mean, echo=TRUE}
 
+```r
 mean(aggregate(act_df$steps,list(act_df$date),sum)$x,na.rm=TRUE)
+```
 
+```
+## [1] 10766.19
 ```
 
 Median of total number of steps taken per day
 
-```{r median, echo=TRUE}
 
+```r
 median(aggregate(act_df$steps,list(act_df$date),sum)$x,na.rm=TRUE)
+```
 
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
 
 A time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
  
-```{r actpat, echo=TRUE}
+
+```r
 dailypat<-aggregate(act_df$steps,list(act_df$interval),mean, na.rm=TRUE, na.action=NULL)
 plot(dailypat, type="l")
-
 ```
+
+![](PA1_template_files/figure-html/actpat-1.png)<!-- -->
 
 Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r actpat2, echo=TRUE}
+
+```r
 mval=max(aggregate(act_df$steps,list(act_df$interval),mean, na.rm=TRUE, na.action=NULL)$x)
 dailypat[dailypat$x==mval,]
+```
 
+```
+##     Group.1        x
+## 104     835 206.1698
 ```
 
 ## Imputing missing values
 
 Total number of missing values in the dataset
 
-```{r navals, echo=TRUE}
+
+```r
 sum(is.na(act_df$steps))
+```
 
 ```
+## [1] 2304
+```
 Our strategy to fill in the NAs will be defined via a function that will use the  mean for that 5-minute interval as follows:
-```{r mean_impute, echo=TRUE}
 
+```r
 imputed<-act_df
 # Function for the data imputing
 
@@ -104,23 +117,30 @@ mean.imp<-function(a){
 imputed$steps<-apply(imputed,1,mean.imp)
 
 hist(aggregate(imputed$steps,list(imputed$date),sum)$x, main="Imputed total number of steps taken per day", xlab="Steps")
-
 ```
+
+![](PA1_template_files/figure-html/mean_impute-1.png)<!-- -->
 
 Mean of total number of steps taken per day
 
-```{r imp_mean, echo=TRUE}
 
+```r
 mean(aggregate(imputed$steps,list(imputed$date),sum)$x,na.rm=TRUE)
+```
 
+```
+## [1] 10766.19
 ```
 
 Median of total number of steps taken per day
 
-```{r imp_median, echo=TRUE}
 
+```r
 median(aggregate(imputed$steps,list(imputed$date),sum)$x,na.rm=TRUE)
+```
 
+```
+## [1] 10766.19
 ```
 
 
@@ -128,8 +148,8 @@ median(aggregate(imputed$steps,list(imputed$date),sum)$x,na.rm=TRUE)
 ## Are there differences in activity patterns between weekdays and weekends?
 
 
-```{r days, echo=TRUE}
 
+```r
 imputed$date<-strptime(imputed$date, "%Y-%m-%d")
 imputed$day <-
         sapply(weekdays(imputed$date), function(x)
@@ -149,8 +169,9 @@ f <-
                 alpha = 1 / 3
         ) + facet_wrap( ~ day, nrow = 2)
 f
-
 ```
+
+![](PA1_template_files/figure-html/days-1.png)<!-- -->
 
 
 
