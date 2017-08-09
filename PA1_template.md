@@ -22,10 +22,6 @@ if (!file.exists("activity.zip")) {
                 paste0(curdir, "/", unzip(paste0(curdir, "/", "activity.zip"), list = TRUE)[1])
 
 act_df <- read.csv(data_file) 
-
-#convert dates
-# act_df$date <-
-#         strptime(act_df$date, "%Y-%m-%d")
 ```
 
 
@@ -116,7 +112,9 @@ mean.imp<-function(a){
 
 imputed$steps<-apply(imputed,1,mean.imp)
 
-hist(aggregate(imputed$steps,list(imputed$date),sum)$x, main="Imputed total number of steps taken per day", xlab="Steps")
+hist(aggregate(imputed$steps, list(imputed$date), sum)$x,
+     main = "Imputed total number of steps taken per day",
+     xlab = "Steps")
 ```
 
 ![](PA1_template_files/figure-html/mean_impute-1.png)<!-- -->
